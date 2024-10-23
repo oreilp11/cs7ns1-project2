@@ -21,10 +21,10 @@ def decode(characters, y):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--model-name', help='Model name to use for classification', type=str)
-    parser.add_argument('--captcha-dir', help='Where to read the captchas to break', type=str)
-    parser.add_argument('--output', help='File where the classifications should be saved', type=str)
-    parser.add_argument('--symbols', help='File with the symbols to use in captchas', type=str)
+    parser.add_argument('-n','--model-name', help='Model name to use for classification', type=str, required=True)
+    parser.add_argument('-c','--captcha-dir', help='Where to read the captchas to break', type=str, required=True)
+    parser.add_argument('-o','--output', help='File where the classifications should be saved', type=str, required=True)
+    parser.add_argument('-s','--symbols', help='File with the symbols to use in captchas', type=str, required=True)
     args = parser.parse_args()
 
     if args.model_name is None:
