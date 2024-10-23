@@ -15,9 +15,9 @@ import warnings
 warnings.filterwarnings("ignore", category=FutureWarning)
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 
-def decode(characters, y):
+def decode(characters, labelmap, y):
     y = numpy.argmax(numpy.array(y), axis=2)[:,0]
-    return ''.join([characters[x] for x in y])
+    return ''.join([labelmap[characters[x]] for x in y])
 
 def main():
     parser = argparse.ArgumentParser()
@@ -25,36 +25,20 @@ def main():
     parser.add_argument('-c','--captcha-dir', help='Where to read the captchas to break', type=str, required=True)
     parser.add_argument('-o','--output', help='File where the classifications should be saved', type=str, required=True)
     parser.add_argument('-s','--symbols', help='File with the symbols to use in captchas', type=str, required=True)
+    parser.add_argument('-l','--labels', help='File with the labels to use in captchas', type=str, required=True)
     args = parser.parse_args()
 
-    if args.model_name is None:
-        print("Please specify the CNN model to use")
-        exit(1)
-
-    if args.captcha_dir is None:
-        print("Please specify the directory with captchas to break")
-        exit(1)
-
-    if args.output is None:
-        print("Please specify the path to the output file")
-        exit(1)
-
-    if args.symbols is None:
-        print("Please specify the captcha symbols file")
-        exit(1)
-
-    symbols_file = open(args.symbols, 'r')
-    captcha_symbols = symbols_file.readline().strip()
-    symbols_file.close()
-
-    print("Classifying captchas with symbol set {" + captcha_symbols + "}")
+    with open(args.symbols, 'r') as symbols_file:
+        captcha_symbols = symbols_file.readline().strip()
+    with open(args.labels, 'r') as labels_file:
+        captcha_labels = labels_file.readline().strip()
+    symbols_dict = {symbol:label for symbol, label in zip(captcha_symbols,captcha_labels)}
+    print(f"Classifying captchas with symbol set {captcha_symbols} and labels {captcha_labels}")
 
     with tf.device('/cpu:0'):
         with open(args.output, 'w') as output_file:
-            json_file = open(args.model_name+'.json', 'r')
-            loaded_model_json = json_file.read()
-            json_file.close()
-            model = keras.models.model_from_json(loaded_model_json)
+            with open(args.model_name+'.json', 'r') as json_file:
+                model = keras.models.model_from_json(json_file.read())
             model.load_weights(args.model_name+'.h5')
             model.compile(loss='categorical_crossentropy',
                           optimizer=keras.optimizers.Adam(1e-3, amsgrad=True),
@@ -68,9 +52,9 @@ def main():
                 (c, h, w) = image.shape
                 image = image.reshape([-1, c, h, w])
                 prediction = model.predict(image)
-                output_file.write(x + ", " + decode(captcha_symbols, prediction) + "\n")
+                output_file.write(f'{x}, {decode(captcha_symbols, symbols_dict, prediction)}\n')
 
-                print('Classified ' + x)
+                print(f'Classified {x}')
 
 if __name__ == '__main__':
     main()
