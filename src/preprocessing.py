@@ -1,5 +1,7 @@
 import cv2
 import os
+import time
+import argparse
 
 IMG_PATH = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'assets', 'imgs')
 imgs = sorted(os.listdir(IMG_PATH))
@@ -41,3 +43,9 @@ for (x,y,w,h) in rects:
 cv2.imshow("modimg", mod_img)
 cv2.imshow("otsu", thresh)
 cv2.waitKey()
+
+def main()
+
+
+if __name__ == "__main__":
+    main()
