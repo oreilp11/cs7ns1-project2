@@ -16,14 +16,15 @@ def time_func(func):
     return wrapper
 
 
-def decode(characters, labelmap, y):
-    y = numpy.argmax(numpy.array(y), axis=2)[:,0]
-    return ''.join([labelmap[characters[x]] for x in y])
+#def decode(characters, labelmap, y):
+#    y = numpy.argmax(numpy.array(y), axis=2)[:,0]
+#    return ''.join([labelmap[characters[x]] for x in y])
 
 
 def classify(model, img):
     i = model.get_input_details()[0]['index']
-    input = model.tensor(i)()[0]
+    input = model.get_tensor(i)[0]
+    del i
     input[:,:] = img
     model.invoke()
     outdict = model.get_output_details()[0]
@@ -61,11 +62,12 @@ def main():
             # load image and preprocess it
             raw_data = cv2.imread(os.path.join(args.captcha_dir, x))
             rgb_data = cv2.cvtColor(raw_data, cv2.COLOR_BGR2RGB)
-            image = numpy.array(rgb_data) / 255.0
+            resize_data = cv2.resize(rgb_data, (96,96))
+            image = numpy.array(resize_data) / 255.0
             (c, h, w) = image.shape
             image = image.reshape([-1, c, h, w])
             prediction, prob = classify(model, image)
-            output_file.write(f'{x}, {decode(captcha_symbols, symbols_dict, prediction)}\n')
+            output_file.write(f'{x}, {symbols_dict[captcha_symbols[prediction]]}\n')
 
             print(f'Classified {x}')
 
