@@ -169,9 +169,7 @@ def get_remaining_images(url, payload, file_path, img_path, missed_path, max_wor
                         f.write(f"{file}\n")
             file_path = missed_path
 
-
-@time_func
-def main():
+def parse_args():
     parser = argparse.ArgumentParser(description="Download files with parallel requests.")
     parser.add_argument("-n","--max_workers", type=int, default=5, help="Maximum number of parallel workers.")
     parser.add_argument("-f","--file-path", type=str, default=5, help="Maximum number of parallel workers.")
@@ -180,7 +178,12 @@ def main():
     parser.add_argument("-s","--shortname", type=str, default=5, help="Maximum number of parallel workers.")
     parser.add_argument("-u","--url", type=str, default=5, help="Maximum number of parallel workers.")
     args = parser.parse_args()
+    return args
 
+
+@time_func
+def main():
+    args = parse_args()
     if not os.path.exists(args.file_path):
         with open(args.file_path,'w'):
             pass
@@ -194,7 +197,6 @@ def main():
 
     if get_first_file(args.url, payload, args.file_path):
         get_remaining_images(args.url, payload, args.file_path, args.img_path, args.missed_path, max_workers=args.max_workers)
-    check_missing_files(args.img_path, args.file_path, args.missed_path)
 
 if __name__ == "__main__":
     main()

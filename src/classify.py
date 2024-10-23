@@ -6,6 +6,7 @@ os.environ["TF_USE_LEGACY_KERAS"] = "1"
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
 import cv2
+import time
 import numpy
 import argparse
 import tensorflow as tf
@@ -15,10 +16,20 @@ import warnings
 warnings.filterwarnings("ignore", category=FutureWarning)
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 
+def time_func(func):
+    def wrapper(*args, **kwargs):
+        start = time.time()
+        func(*args, **kwargs)
+        end = time.time()
+        print("-"*30)
+        print(f"Runtime: {end-start:0.2f}s")
+    return wrapper
+
 def decode(characters, labelmap, y):
     y = numpy.argmax(numpy.array(y), axis=2)[:,0]
     return ''.join([labelmap[characters[x]] for x in y])
 
+@time_func
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('-n','--model-name', help='Model name to use for classification', type=str, required=True)
