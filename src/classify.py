@@ -52,19 +52,17 @@ def main():
             model.load_weights(args.model_name+'.h5')
             model.compile(loss='sparse_categorical_crossentropy',
                           optimizer=keras.optimizers.Adam(1e-3, amsgrad=True),
-                          metrics=['accuracy'])
+                          metrics=['sparse_categorical_accuracy'])
 
             for x in os.listdir(args.captcha_dir):
                 # load image and preprocess it
                 raw_data = cv2.imread(os.path.join(args.captcha_dir, x))
-                rgb_data = cv2.cvtColor(raw_data, cv2.COLOR_BGR2RGB)
-                image = numpy.array(rgb_data) / 255.0
-                (c, h, w) = image.shape
-                image = image.reshape([-1, c, h, w])
+                image = cv2.cvtColor(raw_data, cv2.COLOR_BGR2GRAY)
+                h, w = image.shape
+                image = image.reshape([-1, h, w])
                 prediction = model.predict(image)
                 output_file.write(f'{x}, {decode(captcha_symbols, symbols_dict, prediction)}\n')
 
                 print(f'Classified {x}')
-
 if __name__ == '__main__':
     main()
