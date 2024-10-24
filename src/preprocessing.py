@@ -43,15 +43,15 @@ def clean_img(img):
     grey = cv2.cvtColor(mod_img,cv2.COLOR_BGR2GRAY)
     blur = cv2.GaussianBlur(grey,(5,5),0)
     _, thresh = cv2.threshold(blur,128,255,cv2.THRESH_BINARY + cv2.THRESH_OTSU)
-    # #next applying MSER on large areas to select characters
-    # mser = cv2.MSER().create()
-    # mser.setMaxArea(mod_img.shape[0]*mod_img.shape[1]//7)
-    # mser.setMinArea(150)
-    # _, rects = mser.detectRegions(thresh)
-    # for (x,y,w,h) in rects:
-    #     cv2.rectangle(mod_img, (x,y), (x+w,y+h), color=(0,0,0), thickness=1)
-    # #can crop by bounding box/padded bounding box now
-    return thresh
+    #next applying MSER on large areas to select characters
+    mser = cv2.MSER().create()
+    mser.setMaxArea(mod_img.shape[0]*mod_img.shape[1]//7)
+    mser.setMinArea(150)
+    _, rects = mser.detectRegions(thresh)
+    for (x,y,w,h) in rects:
+        cv2.rectangle(mod_img, (x,y), (x+w,y+h), color=(0,0,0), thickness=1)
+    #can crop by bounding box/padded bounding box now
+    return [thresh[x:x+w,y:y+h] for x,y,w,h in rects]
 
 
 @time_func

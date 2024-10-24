@@ -15,6 +15,7 @@ import warnings
 warnings.filterwarnings("ignore", category=FutureWarning)
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 
+
 def time_func(func):
     def wrapper(*args, **kwargs):
         start = time.time()
@@ -24,9 +25,13 @@ def time_func(func):
         print(f"Runtime: {end-start:0.2f}s")
     return wrapper
 
-def decode(characters, labelmap, y):
-    y = numpy.argmax(numpy.array(y[0]))
-    return labelmap[characters[y]]
+
+def classify(model, img):
+    model.set_tensor(model.get_input_details()[0]['index'], img)
+    model.invoke()
+    preds = model.get_tensor(model.get_output_details()[0]['index'])
+    return numpy.argmax(numpy.array(preds), axis=1)[0]
+
 
 @time_func
 def main():
@@ -42,10 +47,10 @@ def main():
         os.makedirs(os.path.dirname(args.output))
 
     with open(args.symbols, 'r') as symbols_file:
-        captcha_symbols = sorted(symbols_file.readline().strip())
+        captcha_symbols = symbols_file.readline().strip()
     with open(args.labels, 'r') as labels_file:
-        captcha_labels = sorted(labels_file.readline().strip())
-    symbols_dict = {symbol:label for symbol, label in zip(captcha_symbols,captcha_labels)}
+        captcha_labels = labels_file.readline().strip()
+    labels_dict = {label:symbol for symbol, label in zip(captcha_symbols, captcha_labels)}
     print(f"Classifying captchas with symbol set {captcha_symbols} and labels {captcha_labels}")
 
     with tf.device('/cpu:0'):
@@ -57,13 +62,26 @@ def main():
                           optimizer=keras.optimizers.Adam(1e-3, amsgrad=True),
                           metrics=['sparse_categorical_accuracy'])
 
-            for captcha in os.listdir(args.captcha_dir):
+            for captcha in tqdm(os.listdir(args.captcha_dir)):
                 # load image and preprocess it
                 raw_data = cv2.imread(os.path.join(args.captcha_dir, captcha), 0)
                 h, w = raw_data.shape
                 raw_data = raw_data.reshape([-1, h, w, 1])
-                prediction = model.predict(raw_data, )
-                output_file.write(f'{captcha}, {decode(captcha_symbols, symbols_dict, prediction)}\n')
+                prediction = model.predict(raw_data)
+                prediction = numpy.argmax(numpy.array(prediction)[0])[0]
+                output_file.write(f'{captcha}, {labels_dict[captcha_labels[prediction]]}\n')
+
+            # model = tf.lite.Interpreter(args.model_name)
+            # model.allocate_tensors()
+
+            # for captcha in tqdm(os.listdir(args.captcha_dir)):
+            #     # load image and preprocess it
+            #     raw_data = cv2.imread(os.path.join(args.captcha_dir, captcha), 0)
+            #     h, w = raw_data.shape
+            #     raw_data = raw_data.reshape([-1, h, w, 1])
+            #     prediction = classify(model, raw_data)
+            #     print(prediction)
+            #     output_file.write(f'{captcha}, {labels_dict[captcha_labels[prediction]]}\n')
 
 if __name__ == '__main__':
     main()
