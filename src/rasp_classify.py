@@ -24,7 +24,6 @@ def time_func(func):
 def classify(model, img):
     i = model.get_input_details()[0]['index']
     input = model.get_tensor(i)[0]
-    del i
     input[:,:] = img
     model.invoke()
     outdict = model.get_output_details()[0]
@@ -48,7 +47,7 @@ def main():
         captcha_symbols = symbols_file.readline().strip()
     with open(args.labels, 'r') as labels_file:
         captcha_labels = labels_file.readline().strip()
-    symbols_dict = {symbol:label for symbol, label in zip(captcha_symbols,captcha_labels)}
+    symbols_dict = {label:symbol for symbol, label in zip(captcha_symbols,captcha_labels)}
     print(f"Classifying captchas with symbol set {captcha_symbols} and labels {captcha_labels}")
 
 

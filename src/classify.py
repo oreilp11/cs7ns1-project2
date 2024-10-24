@@ -24,8 +24,8 @@ def time_func(func):
     return wrapper
 
 def decode(characters, labelmap, y):
-    y = numpy.argmax(numpy.array(y), axis=2)[:,0]
-    return ''.join([labelmap[characters[x]] for x in y])
+    y = numpy.argmax(numpy.array(y[0]))
+    return labelmap[characters[y]]
 
 @time_func
 def main():
@@ -41,7 +41,8 @@ def main():
         captcha_symbols = symbols_file.readline().strip()
     with open(args.labels, 'r') as labels_file:
         captcha_labels = labels_file.readline().strip()
-    symbols_dict = {symbol:label for symbol, label in zip(captcha_symbols,captcha_labels)}
+    symbols_dict = {label:symbol for symbol, label in zip(captcha_symbols,captcha_labels)}
+    print(symbols_dict)
     print(f"Classifying captchas with symbol set {captcha_symbols} and labels {captcha_labels}")
 
     with tf.device('/cpu:0'):
@@ -49,7 +50,7 @@ def main():
             with open(args.model_name+'.json', 'r') as json_file:
                 model = keras.models.model_from_json(json_file.read())
             model.load_weights(args.model_name+'.h5')
-            model.compile(loss='categorical_crossentropy',
+            model.compile(loss='sparse_categorical_crossentropy',
                           optimizer=keras.optimizers.Adam(1e-3, amsgrad=True),
                           metrics=['accuracy'])
 
