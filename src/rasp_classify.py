@@ -59,12 +59,10 @@ def main():
 
         for x in os.listdir(args.captcha_dir):
             # load image and preprocess it
-            raw_data = cv2.imread(os.path.join(args.captcha_dir, x))
-            rgb_data = cv2.cvtColor(raw_data, cv2.COLOR_BGR2RGB)
-            resize_data = cv2.resize(rgb_data, (96,96))
-            image = numpy.array(resize_data) / 255.0
-            (c, h, w) = image.shape
-            image = image.reshape([-1, c, h, w])
+            raw_data = cv2.imread(os.path.join(args.captcha_dir, x), 0)
+            image = cv2.cvtColor(raw_data, cv2.COLOR_BGR2RGB)
+            h, w = image.shape
+            image = image.reshape([-1, h, w, 1])
             prediction, prob = classify(model, image)
             output_file.write(f'{x}, {symbols_dict[captcha_symbols[prediction]]}\n')
 
