@@ -5,7 +5,7 @@ from tqdm import tqdm
 import cv2
 import argparse
 from captcha.image import ImageCaptcha
-from utils import time_func, center_resize, clean_img
+from utils import time_func, center_pad, clean_img
 
 
 def parse_args():
@@ -47,7 +47,7 @@ def generate_captchas(args):
             image_path = os.path.join(args.output_dir, random_label, f'{random_label}_{version}.png')
             version += 1
 
-        image = center_resize(clean_img(numpy.array(captcha_generator.generate_image(random_symbol))))
+        image = center_pad(clean_img(numpy.array(captcha_generator.generate_image(random_symbol))))
         cv2.imwrite(image_path, image)
 
 

@@ -7,8 +7,7 @@ from tqdm import tqdm
 from utils import time_func
 
 
-@time_func
-def main():
+def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument('-m','--model-path', help='Name of the modedl to be used in classification on PI', type=str, required=True)
     parser.add_argument('-c','--captcha-dir', help='Path to the directory of the captchas stored to be classified on PI', type=str, required=True)
@@ -17,6 +16,11 @@ def main():
     parser.add_argument('-l','--labels', help='File with the labels to use in captchas', type=str, required=True)
     parser.add_argument('-n','--shortname', help='Shortname for csv submission', type=str, required=True)
     args = parser.parse_args()
+    return args
+
+@time_func
+def main():
+    args = parse_args()
 
     if not os.path.exists(os.path.dirname(args.output)):
         os.makedirs(os.path.dirname(args.output))
