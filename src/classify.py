@@ -4,26 +4,16 @@ os.environ["TF_USE_LEGACY_KERAS"] = "1"
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
 import cv2
-import time
 import numpy
 import argparse
 from tqdm import tqdm
 import tensorflow as tf
 import tensorflow.keras as keras
+from utils import clean_img, split_img, center_resize, time_func
 
 import warnings
 warnings.filterwarnings("ignore", category=FutureWarning)
 warnings.filterwarnings("ignore", category=DeprecationWarning)
-
-
-def time_func(func):
-    def wrapper(*args, **kwargs):
-        start = time.time()
-        func(*args, **kwargs)
-        end = time.time()
-        print("-"*30)
-        print(f"Runtime: {end-start:0.2f}s")
-    return wrapper
 
 
 def classify(model, img):
@@ -47,9 +37,9 @@ def main():
         os.makedirs(os.path.dirname(args.output))
 
     with open(args.symbols, 'r') as symbols_file:
-        captcha_symbols = symbols_file.readline().strip()
+        captcha_symbols = sorted(symbols_file.readline().strip())
     with open(args.labels, 'r') as labels_file:
-        captcha_labels = labels_file.readline().strip()
+        captcha_labels = sorted(labels_file.readline().strip())
     labels_dict = {label:symbol for symbol, label in zip(captcha_symbols, captcha_labels)}
     print(f"Classifying captchas with symbol set {captcha_symbols} and labels {captcha_labels}")
 
@@ -63,13 +53,25 @@ def main():
                           metrics=['sparse_categorical_accuracy'])
 
             for captcha in tqdm(os.listdir(args.captcha_dir)):
-                # load image and preprocess it
-                raw_data = cv2.imread(os.path.join(args.captcha_dir, captcha), 0)
+                raw_data = cv2.imread(os.path.join(args.captcha_dir, captcha))
                 h, w = raw_data.shape
                 raw_data = raw_data.reshape([-1, h, w, 1])
-                prediction = model.predict(raw_data)
-                prediction = numpy.argmax(numpy.array(prediction)[0])[0]
-                output_file.write(f'{captcha}, {labels_dict[captcha_labels[prediction]]}\n')
+                prediction = model.predict(raw_data, verbose=0)
+                prediction = numpy.argmax(numpy.array(prediction), axis=1)[0]
+                output_file.write(f'{captcha},{labels_dict[captcha_labels[prediction]]}\n')
+
+                # raw_data = clean_img(cv2.imread(os.path.join(args.captcha_dir, captcha)))
+                # arr = []
+                # chars = [*split_img(raw_data)]
+                # print(len(chars))
+                # for char in chars:
+                #     char = center_resize(char)
+                #     h, w = char.shape
+                #     char = char.reshape([-1, h, w, 1])
+                #     prediction = model.predict(char, verbose=0)
+                #     prediction = numpy.argmax(numpy.array(prediction), axis=1)[0]
+                #     arr.append(labels_dict[captcha_labels[prediction]])
+                # output_file.write(f'{captcha}, {''.join(arr)}\n')
 
             # model = tf.lite.Interpreter(args.model_name)
             # model.allocate_tensors()

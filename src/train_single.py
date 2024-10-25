@@ -14,10 +14,11 @@ import random
 import argparse
 import tensorflow as tf
 import tensorflow.keras as keras
+from utils import time_func
 
 def create_model(captcha_num_symbols, input_shape):
     model = keras.Sequential([
-        keras.layers.Rescaling(1./255, input_shape=input_shape),
+        keras.layers.Rescaling(scale=1./255,input_shape=input_shape),
         keras.layers.Conv2D(32, 3, padding='same', activation='relu', kernel_initializer="he_uniform"),
         keras.layers.BatchNormalization(),
         keras.layers.Activation("relu"),
@@ -79,27 +80,30 @@ def parse_args():
     parser.add_argument("-o", "--output-model-name", help="Where to save the trained model", type=str,required=True)
     parser.add_argument("-r", "--input-model",help="Where to look for the input model to continue training",type=str,required=False)
     parser.add_argument("-e", "--epochs", help="How many training epochs to run", type=int,required=True)
-    parser.add_argument("-s", "--symbols", help="File with the symbols to use in captchas", type=str,required=True)
+    parser.add_argument("-l", "--labels", help="File with the labels to use in captchas", type=str,required=True)
     parser.add_argument("-p", "--is-tflite", help="Set model to export .tflite", action="store_true",default=False)
     args = parser.parse_args()
     return args
 
 
+@time_func
 def main():
     args = parse_args()
 
     if not os.path.exists(os.path.dirname(args.output_model_name)):
         os.makedirs(os.path.dirname(args.output_model_name))
 
-    with open(args.symbols) as symbols_file:
-        captcha_symbols = symbols_file.readline()
+    with open(args.labels) as labels_file:
+        captcha_labels = labels_file.readline().strip()
 
     with tf.device("/cpu:0"):
-        model = create_model(len(captcha_symbols), (args.height, args.width, 1))
+        model = create_model(len(captcha_labels), (args.height, args.width, 1))
 
         training_data, validation_data = keras.preprocessing.image_dataset_from_directory(
             directory=args.dataset_dir,
             color_mode='grayscale',
+            label_mode='int',
+            class_names=captcha_labels,
             validation_split=0.2,
             subset="both",
             seed=2024,

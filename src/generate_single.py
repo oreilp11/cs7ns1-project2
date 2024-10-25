@@ -1,21 +1,11 @@
 import os
 import numpy
 import random
-import time
 from tqdm import tqdm
 import cv2
 import argparse
 from captcha.image import ImageCaptcha
-from preprocessing import clean_img
-
-def time_func(func):
-    def wrapper(*args, **kwargs):
-        start = time.time()
-        func(*args, **kwargs)
-        end = time.time()
-        print("-"*30)
-        print(f"Runtime: {end-start:0.2f}s")
-    return wrapper
+from utils import time_func, center_resize, clean_img
 
 
 def parse_args():
@@ -48,7 +38,7 @@ def generate_captchas(args):
         os.makedirs(os.path.join(args.output_dir, label), exist_ok=True)
 
     for _ in tqdm(range(args.count)):
-        random_symbol = random.choice(captcha_symbols)
+        random_symbol = captcha_symbols[random.randint(0, len(captcha_symbols)-1)]
         random_label = symbols_dict[random_symbol]
 
         image_path = os.path.join(args.output_dir, random_label, f'{random_label}.png')
@@ -57,7 +47,7 @@ def generate_captchas(args):
             image_path = os.path.join(args.output_dir, random_label, f'{random_label}_{version}.png')
             version += 1
 
-        image = clean_img(numpy.array(captcha_generator.generate_image(random_symbol)))
+        image = center_resize(clean_img(numpy.array(captcha_generator.generate_image(random_symbol))))
         cv2.imwrite(image_path, image)
 
 

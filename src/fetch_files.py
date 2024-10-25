@@ -1,20 +1,8 @@
 import requests
-import time
 import argparse
 import os
 from concurrent.futures import ThreadPoolExecutor
-
-
-def time_func(func):
-    def wrapper(*args, **kwargs):
-        start = time.time()
-        func(*args, **kwargs)
-        end = time.time()
-        print("-"*30)
-        print(f"Runtime: {end-start:0.2f}s")
-
-    return wrapper
-
+from utils import time_func
 
 def check_missing_files(args):
     completed_imgs = set(os.listdir(args.img_path))
@@ -48,8 +36,6 @@ def fetch_remaining_files(args):
             with ThreadPoolExecutor(args.max_workers) as tpex:
                 for file in remaining_files:
                     tpex.submit(fetch_img_file, file, args)
-        except Exception as e:
-            print(e)
         except KeyboardInterrupt:
             print("Keyboard interrupt - checking remaining files:")
             check_missing_files(args)

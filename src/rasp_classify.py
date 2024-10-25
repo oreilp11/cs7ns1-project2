@@ -1,19 +1,9 @@
 import os
 import cv2
-import time
 import numpy
 import argparse
 import tflite_runtime.interpreter as tflite
-
-
-def time_func(func):
-    def wrapper(*args, **kwargs):
-        start = time.time()
-        func(*args, **kwargs)
-        end = time.time()
-        print("-"*30)
-        print(f"Runtime: {end-start:0.2f}s")
-    return wrapper
+from utils import time_func
 
 
 #def decode(characters, labelmap, y):
