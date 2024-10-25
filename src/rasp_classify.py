@@ -24,15 +24,13 @@ def main():
         captcha_symbols = symbols_file.readline().strip()
     with open(args.labels, 'r') as labels_file:
         captcha_labels = labels_file.readline().strip()
-    symbols_dict = {label:symbol for symbol, label in zip(captcha_symbols,captcha_labels)}
+    labels_dict = {label:symbol for symbol, label in zip(captcha_symbols,captcha_labels)}
     print(f"Classifying captchas with symbol set {captcha_symbols} and labels {captcha_labels}")
-
 
     with open(args.output, 'w') as output_file:
         model = tflite.Interpreter(args.model_path)
         model.allocate_tensors()
         for captcha in tqdm(os.listdir(args.captcha_dir)):
-            # load image and preprocess it
             raw_data = cv2.imread(os.path.join(args.captcha_dir, captcha), 0)
             h, w = raw_data.shape
             raw_data = raw_data.reshape([-1, h, w, 1]).astype(np.float32)
@@ -40,9 +38,7 @@ def main():
             model.invoke()
             prediction = np.array(model.get_tensor(model.get_output_details()[0]['index']))
             prediction = np.argmax(prediction, axis=1)[0]
-            output_file.write(f'{captcha}, {symbols_dict[captcha_symbols[prediction]]}\n')
-
-            print(f'Classified {captcha}')
+            output_file.write(f'{captcha}, {labels_dict[captcha_labels[prediction]]}\n')
 
 
 if __name__ == '__main__':
