@@ -24,7 +24,7 @@ def main():
         captcha_symbols = symbols_file.readline().strip()
     with open(args.labels, 'r') as labels_file:
         captcha_labels = labels_file.readline().strip()
-    symbols_dict = {label:symbol for symbol, label in zip(captcha_symbols,captcha_labels)}
+    labels_dict = {label:symbol for symbol, label in zip(captcha_symbols,captcha_labels)}
     print(f"Classifying captchas with symbol set {captcha_symbols} and labels {captcha_labels}")
 
 
@@ -40,7 +40,7 @@ def main():
             model.invoke()
             prediction = np.array(model.get_tensor(model.get_output_details()[0]['index']))
             prediction = np.argmax(prediction, axis=1)[0]
-            output_file.write(f'{captcha}, {symbols_dict[captcha_symbols[prediction]]}\n')
+            output_file.write(f'{captcha}, {labels_dict[captcha_labels[prediction]]}\n')
 
             print(f'Classified {captcha}')
 
