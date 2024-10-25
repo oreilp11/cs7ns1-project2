@@ -81,7 +81,6 @@ def parse_args():
     parser.add_argument("-r", "--input-model",help="Where to look for the input model to continue training",type=str,required=False)
     parser.add_argument("-e", "--epochs", help="How many training epochs to run", type=int,required=True)
     parser.add_argument("-l", "--labels", help="File with the labels to use in captchas", type=str,required=True)
-    parser.add_argument("-p", "--is-tflite", help="Set model to export .tflite", action="store_true",default=False)
     args = parser.parse_args()
     return args
 
@@ -132,11 +131,10 @@ def main():
             print(f"KeyboardInterrupt caught, saving current weights as {args.output_model_name}_resume.h5")
             model.save_weights(f"{args.output_model_name}_resume.h5")
         finally:
-            if args.is_tflite:
-                converter = tf.lite.TFLiteConverter.from_keras_model(model)
-                lite_model = converter.convert()
-                with open(f"{args.output_model_name}.tflite", "wb") as lite_file:
-                    lite_file.write(lite_model)
+            converter = tf.lite.TFLiteConverter.from_keras_model(model)
+            lite_model = converter.convert()
+            with open(f"{args.output_model_name}.tflite", "wb") as lite_file:
+                lite_file.write(lite_model)
 
 
 if __name__ == "__main__":

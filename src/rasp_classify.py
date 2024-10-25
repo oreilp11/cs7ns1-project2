@@ -6,23 +6,6 @@ import tflite_runtime.interpreter as tflite
 from utils import time_func
 
 
-#def decode(characters, labelmap, y):
-#    y = numpy.argmax(numpy.array(y), axis=2)[:,0]
-#    return ''.join([labelmap[characters[x]] for x in y])
-
-
-def classify(model, img):
-    i = model.get_input_details()[0]['index']
-    input = model.get_tensor(i)[0]
-    input[:,:] = img
-    model.invoke()
-    outdict = model.get_output_details()[0]
-    output = numpy.squeeze(model.get_tensor(outdict['index']))
-    output = outdict['quantization'][0]*(output - outdict['quantization'][1])
-    maxval = numpy.argpartition(-output, 1)
-    return [(i, output[i]) for i in maxval[:1]][0]
-
-
 @time_func
 def main():
     parser = argparse.ArgumentParser()
@@ -43,10 +26,7 @@ def main():
 
     with open(args.output, 'w') as output_file:
         model = tflite.Interpreter(args.model_path)
-        print("Model loaded")
         model.allocate_tensors()
-        print(model.get_input_details())
-
         for x in os.listdir(args.captcha_dir):
             # load image and preprocess it
             raw_data = cv2.imread(os.path.join(args.captcha_dir, x), 0)
