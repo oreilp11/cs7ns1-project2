@@ -12,11 +12,11 @@ def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument('-w','--width', help='Width of captcha image', type=int, required=True)
     parser.add_argument('-H','--height', help='Height of captcha image', type=int, required=True)
-    parser.add_argument('-c','--count', help='How many captchas to generate', type=int, required=True)
-    parser.add_argument('-o','--output-dir', help='Where to store the generated captchas', type=str, required=True)
-    parser.add_argument('-s','--symbols', help='File with the symbols to use in captchas', type=str, required=True)
-    parser.add_argument('-l','--labels', help='File containing labels for sybmols', type=str, required=True)
-    parser.add_argument('-f','--font', nargs="+", help='File with the font to use in captchas', required=True)
+    parser.add_argument('-c','--count', help='No of Captchas images to be generated for the sake of training', type=int, required=True)
+    parser.add_argument('-o','--output-dir', help='Path to the directory where the generated captchas will be stored', type=str, required=True)
+    parser.add_argument('-s','--symbols', help='path to file containing the symbols used in generation', type=str, required=True)
+    parser.add_argument('-l','--labels', help='path to the file containing labels for sybmols', type=str, required=True)
+    parser.add_argument('-f','--font', nargs="+", help='path to the file containing the font to use in captcha generation.', required=True)
     args = parser.parse_args()
     return args
 
