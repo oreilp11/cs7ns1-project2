@@ -57,11 +57,11 @@ def fetch_img_file(file, args):
 def parse_args():
     parser = argparse.ArgumentParser(description="Download files with parallel requests.")
     parser.add_argument("-n","--max_workers", type=int, default=4, help="Maximum number of parallel workers.", required=False)
-    parser.add_argument("-f","--file-path", type=str, help="path to file list", required=True)
-    parser.add_argument("-i","--img-path", type=str, help="path to image directory", required=True)
-    parser.add_argument("-m","--missed-path", type=str, help="path to missed files", required=False, default=os.path.join(os.path.dirname(__file__),'temp.csv'))
-    parser.add_argument("-s","--shortname", type=str, help="shortname for get request", required=True)
-    parser.add_argument("-u","--url", type=str, help="url for get request", required=True)
+    parser.add_argument("-f","--file-path", type=str, help="path to list which contains the names of captchas to be downloaded from the url.", required=True)
+    parser.add_argument("-i","--img-path", type=str, help="path to directory where the downloaded captchas will be stored", required=True)
+    parser.add_argument("-m","--missed-path", type=str, help="path to file which keep a note of missed files", required=False, default=os.path.join(os.path.dirname(__file__),'temp.csv'))
+    parser.add_argument("-s","--shortname", type=str, help="shortname of the user to access the resources", required=True)
+    parser.add_argument("-u","--url", type=str, help="url of the site to request the resources", required=True)
     args = parser.parse_args()
 
     return args
