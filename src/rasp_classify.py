@@ -1,8 +1,9 @@
 import os
 import cv2
-import numpy
+import numpy as np
 import argparse
 import tflite_runtime.interpreter as tflite
+from tqdm import tqdm
 from utils import time_func
 
 
@@ -27,16 +28,18 @@ def main():
     with open(args.output, 'w') as output_file:
         model = tflite.Interpreter(args.model_path)
         model.allocate_tensors()
-        for x in os.listdir(args.captcha_dir):
+        for captcha in tqdm(os.listdir(args.captcha_dir)):
             # load image and preprocess it
-            raw_data = cv2.imread(os.path.join(args.captcha_dir, x), 0)
-            image = cv2.cvtColor(raw_data, cv2.COLOR_BGR2RGB)
-            h, w = image.shape
-            image = image.reshape([-1, h, w, 1])
-            prediction, prob = classify(model, image)
-            output_file.write(f'{x}, {symbols_dict[captcha_symbols[prediction]]}\n')
+            raw_data = cv2.imread(os.path.join(args.captcha_dir, captcha), 0)
+            h, w = raw_data.shape
+            raw_data = raw_data.reshape([-1, h, w, 1]).astype(np.float32)
+            model.set_tensor(model.get_input_details()[0]['index'], raw_data)
+            model.invoke()
+            prediction = np.array(model.get_tensor(model.get_output_details()[0]['index']))
+            prediction = np.argmax(prediction, axis=1)[0]
+            output_file.write(f'{captcha}, {symbols_dict[captcha_symbols[prediction]]}\n')
 
-            print(f'Classified {x}')
+            print(f'Classified {captcha}')
 
 
 if __name__ == '__main__':
