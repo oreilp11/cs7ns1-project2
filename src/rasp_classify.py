@@ -10,11 +10,11 @@ from utils import time_func
 @time_func
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('-n','--model-path', help='Name of the modedl to be used in classification on PI', type=str, required=True)
+    parser.add_argument('-n','--model-path', help='Name of the model to be used in classification on PI', type=str, required=True)
     parser.add_argument('-c','--captcha-dir', help='Path to the directory of the captchas stored to be classified on PI', type=str, required=True)
-    parser.add_argument('-o','--output', help='File where the classifications should be saved', type=str, required=True)
-    parser.add_argument('-s','--symbols', help='File with the symbols to use in captchas', type=str, required=True)
-    parser.add_argument('-l','--labels', help='File with the labels to use in captchas', type=str, required=True)
+    parser.add_argument('-o','--output', help='path to the Location where the classification result should be saved ', type=str, required=True)
+    parser.add_argument('-s','--symbols', help='path to the file containing symbols used in classification on PI', type=str, required=True)
+    parser.add_argument('-l','--labels', help='path to file containing labels used in classification on PI', type=str, required=True)
     args = parser.parse_args()
 
     if not os.path.exists(os.path.dirname(args.output)):
