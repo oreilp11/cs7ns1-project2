@@ -40,7 +40,7 @@ def main():
     with tf.device('/cpu:0'):
         with open(args.output, 'w') as output_file:
             
-            model = tf.lite.Interpreter(args.model_name)
+            model = tf.lite.Interpreter(args.model_path)
             model.allocate_tensors()
 
             for captcha in tqdm(os.listdir(args.captcha_dir)):
