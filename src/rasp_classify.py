@@ -10,8 +10,8 @@ from utils import time_func
 @time_func
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('-n','--model-path', help='Model name to use for classification', type=str, required=True)
-    parser.add_argument('-c','--captcha-dir', help='Where to read the captchas to break', type=str, required=True)
+    parser.add_argument('-n','--model-path', help='Name of the modedl to be used in classification on PI', type=str, required=True)
+    parser.add_argument('-c','--captcha-dir', help='Path to the directory of the captchas stored to be classified on PI', type=str, required=True)
     parser.add_argument('-o','--output', help='File where the classifications should be saved', type=str, required=True)
     parser.add_argument('-s','--symbols', help='File with the symbols to use in captchas', type=str, required=True)
     parser.add_argument('-l','--labels', help='File with the labels to use in captchas', type=str, required=True)
