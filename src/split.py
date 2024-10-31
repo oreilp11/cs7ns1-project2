@@ -34,7 +34,7 @@ def main():
     for _ in tqdm(range(split_size)):
         file = random.choice(imgs)
         os.rename(os.path.join(args.input_dir,file), os.path.join(args.output_dir,file))
-        imgs.remove(file)   
+        imgs.remove(file)
         
 
 if __name__ == '__main__':
