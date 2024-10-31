@@ -5,7 +5,7 @@ from tqdm import tqdm
 import cv2
 import argparse
 from captcha.image import ImageCaptcha
-from utils import time_func, center_resize, clean_img
+from utils import time_func, clean_img
 
 
 def parse_args():
