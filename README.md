@@ -19,5 +19,14 @@ Completed by Paul O'Reilly and Duddupudi Daya Lokesh
 ### Classifying on the Pi
 The files you will need are `fetch_files.py` and `rasp_classify.py`. The prerequisite python packages are listed in the `requirements-pi.txt` file.
 #### Fetching Files
+Run the below in a venv with the appropriate prerequisited installed:
+>python .src/fetch_files.py -h
 
-    python .src/fetch_files.py -h
+The `fetch_files.py` module has the following inputs:
+
+The `fetch_files.py` module does the following:
+
+Below is an example of how we used `fetch_files.py`:
+>python .src/fetch_files -n 4 -f .\assets\oreilp11_fienames.csv -i .\assets\imgs\oreilp11 -s oreilp11 -u https://cs7ns1.scss.tcd.ie
+#### Classifying Files
+
