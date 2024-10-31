@@ -1,8 +1,13 @@
 import cv2
 import os
 
-img_path = os.path.join(os.path.dirname(__file__), 'imgs')
-img = cv2.imread(os.path.join(img_path, os.listdir(img_path)[2300])) #testing on random image
+IMG_PATH = os.path.join(os.path.dirname(__file__), 'imgs')
+OUT_PATH = os.path.join(os.path.dirname(__file__), 'output')
+if not os.path.exists(OUT_PATH):
+    os.mkdir(OUT_PATH)
+
+
+img = cv2.imread(os.path.join(IMG_PATH, os.listdir(IMG_PATH)[1]))
 mod_img = img.copy()
 grey = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
 _, thresh = cv2.threshold(grey,0,255,cv2.THRESH_BINARY+cv2.THRESH_OTSU)
@@ -27,7 +32,10 @@ for (x,y,w,h) in rects:
     cv2.rectangle(mod_img, (x,y), (x+w,y+h), color=(0,0,0), thickness=1)
 #can crop by bounding box/padded bounding box now
 
+cv2.imwrite(os.path.join(OUT_PATH,'original.png'),mod_img)
+cv2.imwrite(os.path.join(OUT_PATH,'thresh.png'),thresh)
+
 #displaying images
-cv2.imshow("modimg", mod_img)
-cv2.imshow("otsu", thresh)
-cv2.waitKey()
+#cv2.imshow("modimg", mod_img)
+#cv2.imshow("otsu", thresh)
+#cv2.waitKey()
