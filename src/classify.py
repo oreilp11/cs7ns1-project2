@@ -19,11 +19,11 @@ warnings.filterwarnings("ignore", category=DeprecationWarning)
 @time_func
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('-n','--model-path', help='Model name to use for classification', type=str, required=True)
-    parser.add_argument('-c','--captcha-dir', help='Where to read the captchas to break', type=str, required=True)
-    parser.add_argument('-o','--output', help='File where the classifications should be saved', type=str, required=True)
-    parser.add_argument('-s','--symbols', help='File with the symbols to use in captchas', type=str, required=True)
-    parser.add_argument('-l','--labels', help='File with the labels to use in captchas', type=str, required=True)
+    parser.add_argument('-n','--model-path', help='Name of the trained model to be used in classification', type=str, required=True)
+    parser.add_argument('-c','--captcha-dir', help='Location of the Captchas to classify', type=str, required=True)
+    parser.add_argument('-o','--output', help='Location to where the classified file should be stored', type=str, required=True)
+    parser.add_argument('-s','--symbols', help='Location of File containing the symbols and character set', type=str, required=True)
+    parser.add_argument('-l','--labels', help='path to the file containing the labels to use in captchas', type=str, required=True)
     args = parser.parse_args()
 
     if not os.path.exists(os.path.dirname(args.output)):

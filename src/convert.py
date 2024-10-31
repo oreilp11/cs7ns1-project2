@@ -11,7 +11,7 @@ from utils import time_func
 @time_func
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('-n','--model-name', help='Model name to use for classification', type=str, required=True)
+    parser.add_argument('-n','--model-name', help='Name of the model to be used in classification', type=str, required=True)
 
     args = parser.parse_args()
 
