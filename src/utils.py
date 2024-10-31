@@ -15,7 +15,7 @@ def time_func(func):
 def clean_img(img):
     kernel = np.ones((3,3))
     img = cv2.GaussianBlur(img,(3,3),0)
-    _, img = cv2.threshold(img, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+    _, img = cv2.threshold(img, 225, 255, cv2.THRESH_BINARY)
 
     mser = cv2.MSER().create()
     mser.setMaxArea(20)
