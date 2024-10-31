@@ -1,12 +1,12 @@
 # Codebase for CS7NS1 Project 2
-Completed by Paul O'Reilly [ID: 24351186] and Duddupudi Daya Lokesh [ID: 24351819]
+Completed by Paul O'Reilly _ID: 24351186_ and Duddupudi Daya Lokesh _ID: 24351819_
 
 ## Process Description
 This codebase assumes that Python 3.8 is installed on the Pi and Python >= 3.10 is installed on a Windows machine as the training PC
 
 ### Pi
 1. Configure venv and install necessary packages from `requirements-pi.txt` 
-2. (Optional) Build OpenCV package from source for architecture specific optimisations
+2. _(Optional)_ Build OpenCV package from source for architecture specific optimisations
 3. Fetch initial csv and subsequent files from server using `fetch_files.py`
 4. Classify the captcha set with a trained .tflite model using `rasp_classify.py`
 
@@ -16,7 +16,7 @@ This codebase assumes that Python 3.8 is installed on the Pi and Python >= 3.10 
 3. Identify fonts/symbol set
 4. Generate single character captcha training set using `generate_single.py`
 5. Train cnn captcha solving model using `train_single.py`
-6. (Optional) Classify the captcha set with a trained .tflite model using `classify.py`
+6. _(Optional)_ Classify the captcha set with a trained .tflite model using `classify.py`
 
 ## Instructions on How to Run Code
 
@@ -33,9 +33,9 @@ The `fetch_files.py` module has the following inputs:
 - `-f / --file-path`: Path to save initial csv containing image file names from server.
 - `-i / --img-path`: Path to save images listed in the initial csv.
 - `-s / --shortname`: Shortname to use in the request sent to the server.
-- `-u / --url`: Url to the server hosting the files.
-- `-m / --missed-path`: (Optional) Path for temporary csv used for calculating remaining files not yet downloaded. Defaults to the same directory as the `fetch_files.py` file.
-- `-n / --max_workers`: (Optional) Maximum number of workers for `ThreadPoolExecuter` to use for multiprocessing. Defaults to 4 due to number of cores available on Pi. 
+- `-u / --url`: URL to the server hosting the files.
+- `-m / --missed-path`: _(Optional)_ Path for temporary csv used for calculating remaining files not yet downloaded. Defaults to the same directory as the `fetch_files.py` file.
+- `-n / --max_workers`: _(Optional)_ Maximum number of workers for `ThreadPoolExecuter` to use for multiprocessing. Defaults to 4 due to number of cores available on Pi. 
 
 Below is an example of how we used `fetch_files.py`:
 ```
@@ -97,7 +97,7 @@ The `train.py` module has the following inputs:
 - `-l / --labels`: Path to file containing labels corresponding to guesses for captcha symbol set - used to ensure special characters do not interfere with string parsing/processing.
 - `-d / --dataset-dir`: Path to directory containing generated training set captchas.
 - `-o / --output-model-name`: Path including name to save trained model (and weights file if training is paused).
-- `-r / --resume-model`: (Optional) Path to weights file (`.h5`) to resume training from if training was paused.
+- `-r / --resume-model`: _(Optional)_ Path to weights file (`.keras`) to resume training from if training was paused.
 
 Below is an example of how we used `train.py`:
 ```
