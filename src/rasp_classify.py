@@ -7,7 +7,7 @@ import cv2
 import numpy as np
 import argparse
 from tqdm import tqdm
-import tflite_runtime as tflite
+import tflite_runtime.interpreter as tflite
 from utils import clean_img, split_img, center_pad, time_func
 
 import warnings
