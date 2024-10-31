@@ -108,69 +108,17 @@ class ImageSequence(keras.utils.Sequence):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--width", help="Width of captcha image", type=int)
-    parser.add_argument("--height", help="Height of captcha image", type=int)
-    parser.add_argument("--length", help="Length of captchas in characters", type=int)
-    parser.add_argument(
-        "--batch-size", help="How many images in training captcha batches", type=int
-    )
-    parser.add_argument(
-        "--train-dataset", help="Where to look for the training image dataset", type=str
-    )
-    parser.add_argument(
-        "--validate-dataset",
-        help="Where to look for the validation image dataset",
-        type=str,
-    )
-    parser.add_argument(
-        "--output-model-name", help="Where to save the trained model", type=str
-    )
-    parser.add_argument(
-        "--input-model",
-        help="Where to look for the input model to continue training",
-        type=str,
-    )
-    parser.add_argument("--epochs", help="How many training epochs to run", type=int)
-    parser.add_argument(
-        "--symbols", help="File with the symbols to use in captchas", type=str
-    )
+    parser.add_argument("--width", help="Width of captcha image", type=int,required=True)
+    parser.add_argument("--height", help="Height of captcha image", type=int,required=True)
+    parser.add_argument("--length", help="Length of captchas in characters", type=int,required=True)
+    parser.add_argument("--batch-size", help="How many images in training captcha batches", type=int,required=True)
+    parser.add_argument("--train-dataset", help="Where to look for the training image dataset", type=str,required=True)
+    parser.add_argument("--validate-dataset",help="Where to look for the validation image dataset",type=str,required=True)
+    parser.add_argument("--output-model-name", help="Where to save the trained model", type=str,required=True)
+    parser.add_argument("--input-model",help="Where to look for the input model to continue training",type=str,required=True)
+    parser.add_argument("--epochs", help="How many training epochs to run", type=int,required=True)
+    parser.add_argument("--symbols", help="File with the symbols to use in captchas", type=str,required=True)
     args = parser.parse_args()
-
-    if args.width is None:
-        print("Please specify the captcha image width")
-        exit(1)
-
-    if args.height is None:
-        print("Please specify the captcha image height")
-        exit(1)
-
-    if args.length is None:
-        print("Please specify the captcha length")
-        exit(1)
-
-    if args.batch_size is None:
-        print("Please specify the training batch size")
-        exit(1)
-
-    if args.epochs is None:
-        print("Please specify the number of training epochs to run")
-        exit(1)
-
-    if args.train_dataset is None:
-        print("Please specify the path to the training data set")
-        exit(1)
-
-    if args.validate_dataset is None:
-        print("Please specify the path to the validation data set")
-        exit(1)
-
-    if args.output_model_name is None:
-        print("Please specify a name for the trained model")
-        exit(1)
-
-    if args.symbols is None:
-        print("Please specify the captcha symbols file")
-        exit(1)
 
     captcha_symbols = None
     with open(args.symbols) as symbols_file:
@@ -183,9 +131,7 @@ def main():
     # with tf.device('/device:GPU:0'):
     with tf.device("/cpu:0"):
         # with tf.device('/device:XLA_CPU:0'):
-        model = create_model(
-            args.length, len(captcha_symbols), (args.height, args.width, 3)
-        )
+        model = create_model(args.length, len(captcha_symbols), (args.height, args.width, 3))
 
         if args.input_model is not None:
             model.load_weights(args.input_model)
