@@ -1,8 +1,5 @@
 import os
 
-os.environ["TF_USE_LEGACY_KERAS"] = "1"
-os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
-
 import cv2
 import numpy as np
 import argparse
@@ -61,8 +58,10 @@ def main():
     results.sort(key = lambda x:x[0])
     with open(args.output, 'w') as output_file:
         output_file.write(f'{args.shortname}\n')
-        for captcha, label in results:
-            output_file.write(f'{captcha},{label}\n')
+        for i, (captcha, label) in enumerate(results, 1):
+            output_file.write(f'{captcha},{label}')
+            if i < len(results):
+                output_file.write('\n')
 
 if __name__ == '__main__':
     main()

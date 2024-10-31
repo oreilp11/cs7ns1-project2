@@ -3,6 +3,8 @@
 *.ini
 *.json
 *.h5
-__pycache__
+__pycache__/
 *.pyc
-\project2
+*.zip
+training/
+.idea/

@@ -52,5 +52,5 @@ def center_pad(img, width=96, height=96):
         return img
     
     formatted_img = np.full((height, width), 255)
-    formatted_img[(height-imh)//2:(height+imh)//2, (width-imw)//2:(width+imw)//2] = img
+    formatted_img[(height-imh)//2:(height+imh)//2, :imw] = img
     return formatted_img

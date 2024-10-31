@@ -1,6 +1,5 @@
 import os
-import numpy
-import random
+import numpy as np
 from tqdm import tqdm
 import cv2
 import argparse
@@ -36,19 +35,22 @@ def generate_captchas(args):
     os.makedirs(args.output_dir, exist_ok=True)
     for label in captcha_labels:
         os.makedirs(os.path.join(args.output_dir, label), exist_ok=True)
-
-    for _ in tqdm(range(args.count)):
-        random_symbol = captcha_symbols[random.randint(0, len(captcha_symbols)-1)]
+    
+    n = len(captcha_symbols)
+    for i in tqdm(range(args.count)):
+        random_symbol = captcha_symbols[i % n]
         random_label = symbols_dict[random_symbol]
 
         image_path = os.path.join(args.output_dir, random_label, f'{random_label}.png')
         version = 1
-        while os.path.exists(image_path):
+        if os.path.exists(image_path):
             image_path = os.path.join(args.output_dir, random_label, f'{random_label}_{version}.png')
-            version += 1
+        while os.path.exists(image_path):
+            version = max([int(v[:-4].split('_')[-1]) for v in os.listdir(os.path.join(args.output_dir, random_label)) if '_' in v]) + 1
+            image_path = os.path.join(args.output_dir, random_label, f'{random_label}_{version}.png')
         
         image = captcha_generator.generate_image(random_symbol)
-        image = cv2.cvtColor(numpy.array(image),cv2.COLOR_RGB2GRAY)
+        image = cv2.cvtColor(np.array(image),cv2.COLOR_RGB2GRAY)
         image = center_pad(clean_img(image))
         cv2.imwrite(image_path, image)
 
