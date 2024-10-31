@@ -1,5 +1,6 @@
 # Codebase for CS7NS1 Project 2
 Completed by Paul O'Reilly _ID: 24351186_ and Duddupudi Daya Lokesh _ID: 24351819_
+Group Number: 32
 
 ## Process Description
 This codebase assumes that Python == 3.8 is installed on the Pi. It also assumes that the Training PC is a Windows machine and has Python >= 3.10 installed.
