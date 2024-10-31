@@ -4,7 +4,7 @@ import numpy as np
 import argparse
 import tflite_runtime.interpreter as tflite
 from tqdm import tqdm
-from utils import time_func
+from utils import time_func, split_img, clean_img, center_pad
 
 
 def parse_args():
@@ -36,14 +36,19 @@ def main():
     model = tflite.Interpreter(args.model_path)
     model.allocate_tensors()
     for captcha in tqdm(os.listdir(args.captcha_dir)):
-        raw_data = cv2.imread(os.path.join(args.captcha_dir, captcha), 0)
-        h, w = raw_data.shape
-        raw_data = raw_data.reshape([-1, h, w, 1]).astype(np.float32)
-        model.set_tensor(model.get_input_details()[0]['index'], raw_data)
-        model.invoke()
-        prediction = np.array(model.get_tensor(model.get_output_details()[0]['index']))
-        prediction = np.argmax(prediction, axis=1)[0]
-        results.append((captcha,labels_dict[captcha_labels[prediction]]))
+        raw_data = clean_img(cv2.imread(os.path.join(args.captcha_dir, captcha), 0))
+        arr = []
+        chars = [*split_img(raw_data)]
+        for char in chars:
+            char = center_pad(char)
+            h, w = char.shape
+            char = char.reshape([-1, h, w, 1]).astype(np.float32)
+            model.set_tensor(model.get_input_details()[0]['index'], char)
+            model.invoke()
+            prediction = np.array(model.get_tensor(model.get_output_details()[0]['index']))
+            prediction = np.argmax(prediction, axis=1)[0]
+            arr.append(labels_dict[captcha_labels[prediction]])
+        results.append((captcha,''.join(arr)))
     results.sort(key = lambda x:x[0])
     with open(args.output, 'w') as output_file:
         output_file.write(f'{args.shortname}\n')
