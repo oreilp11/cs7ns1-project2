@@ -36,7 +36,7 @@ def main():
     model = tflite.Interpreter(args.model_path)
     model.allocate_tensors()
     for captcha in tqdm(os.listdir(args.captcha_dir)):
-        raw_data = clean_img(cv2.imread(os.path.join(args.captcha_dir, captcha)))
+        raw_data = clean_img(cv2.imread(os.path.join(args.captcha_dir, captcha), 0))
         arr = []
         chars = [*split_img(raw_data)]
         for char in chars:
