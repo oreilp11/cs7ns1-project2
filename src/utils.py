@@ -33,14 +33,21 @@ def clean_img(img):
 
 def split_img(img):
     mser = cv2.MSER().create()
-    mser.setMaxArea(img.shape[0]*img.shape[1]//7)
+    mser.setMaxArea(img.shape[0]*img.shape[1]//4)
     mser.setMinArea(150)
     _, rects = mser.detectRegions(img)
+    chars = []
+    for x,y,w,h in rects:
+        if w <= 92:
+            chars.append(img[y:y+h, x:x+w])
+        else:
+            chars.append(img[y:y+h, x:x+w//2])
+            chars.append(img[y:y+h, x+w//2:x+w])
 
-    return [img[y:y+h,x:x+w] for x,y,w,h in rects]
+    return chars
 
 
-def center_resize(img, width=96, height=96):
+def center_pad(img, width=96, height=96):
     imh, imw = img.shape
     if imh == height and imw == width:
         return img
