@@ -16,17 +16,10 @@ warnings.filterwarnings("ignore", category=FutureWarning)
 warnings.filterwarnings("ignore", category=DeprecationWarning)
 
 
-def classify(model, img):
-    model.set_tensor(model.get_input_details()[0]['index'], img)
-    model.invoke()
-    preds = model.get_tensor(model.get_output_details()[0]['index'])
-    return np.argmax(np.array(preds), axis=1)[0]
-
-
 @time_func
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument('-n','--model-name', help='Model name to use for classification', type=str, required=True)
+    parser.add_argument('-n','--model-path', help='Model name to use for classification', type=str, required=True)
     parser.add_argument('-c','--captcha-dir', help='Where to read the captchas to break', type=str, required=True)
     parser.add_argument('-o','--output', help='File where the classifications should be saved', type=str, required=True)
     parser.add_argument('-s','--symbols', help='File with the symbols to use in captchas', type=str, required=True)
@@ -46,12 +39,6 @@ def main():
 
     with tf.device('/cpu:0'):
         with open(args.output, 'w') as output_file:
-            # with open(args.model_name+'.json', 'r') as json_file:
-            #     model = keras.models.model_from_json(json_file.read())
-            # model.load_weights(args.model_name+'.h5')
-            # model.compile(loss='sparse_categorical_crossentropy',
-            #               optimizer=keras.optimizers.Adam(1e-3, amsgrad=True),
-            #               metrics=['sparse_categorical_accuracy'])
             
             model = tf.lite.Interpreter(args.model_name)
             model.allocate_tensors()
