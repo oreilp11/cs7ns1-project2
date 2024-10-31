@@ -2,6 +2,7 @@
 Completed by Paul O'Reilly [ID: 24351186] and Duddupudi Daya Lokesh [ID: 24351819]
 
 ## Process Description
+This codebase assumes that Python 3.8 is installed on the Pi and Python >= 3.10 is installed on a Windows machine as the training PC
 
 ### Pi
 1. Configure venv and install necessary packages from `requirements-pi.txt` 

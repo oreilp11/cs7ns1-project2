@@ -3,8 +3,9 @@
 *.ini
 *.json
 *.h5
-__pycache__/
+__pycache__
 *.pyc
 *.zip
 training/
-.idea/
+venv/
+test/

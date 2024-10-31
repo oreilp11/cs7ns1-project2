@@ -1,6 +1,5 @@
 import os
 
-os.environ["TF_USE_LEGACY_KERAS"] = "1"
 os.environ["TF_CPP_MIN_LOG_LEVEL"] = "3"
 
 import warnings
@@ -58,7 +57,7 @@ def create_model(captcha_num_symbols, input_shape, resume_path):
     ])
 
     if resume_path is not None:
-        model.load_weigths(resume_path)
+        model.load_weights(resume_path)
 
     model.compile(
         loss="sparse_categorical_crossentropy",
@@ -110,22 +109,16 @@ def main():
             batch_size=args.batch_size
         )
 
-        callbacks = [
-            keras.callbacks.EarlyStopping(patience=args.epochs // 10, restore_best_weights=True),
-            keras.callbacks.ModelCheckpoint(f'{args.output_model_name}.h5', save_best_only=True),
-        ]
-
         try:
             model.fit(
                 x=training_data,
                 validation_data=validation_data,
                 epochs=args.epochs,
-                callbacks=callbacks,
-                use_multiprocessing=True,
+                callbacks=[keras.callbacks.EarlyStopping(patience=args.epochs // 10, restore_best_weights=True)],
             )
         except KeyboardInterrupt:
-            print(f"\nPausing training, saving current weights as {args.output_model_name}_resume.h5")
-            model.save_weights(f"{args.output_model_name}_resume.h5")
+            print(f"\nPausing training, saving current weights as {args.output_model_name}_resume.keras")
+            model.save_weights(f"{args.output_model_name}_resume.keras")
         finally:
             converter = tf.lite.TFLiteConverter.from_keras_model(model)
             lite_model = converter.convert()
