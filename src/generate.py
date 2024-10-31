@@ -33,6 +33,7 @@ def parse_args():
     args = parser.parse_args()
     return args
 
+
 def generate_captchas(args):
     captcha_generator = captcha.image.ImageCaptcha(width=args.width, height=args.height, fonts=[args.font])
 
@@ -56,6 +57,7 @@ def generate_captchas(args):
 
         image = numpy.array(captcha_generator.generate_image(random_symbolstr))
         cv2.imwrite(image_path, image)
+
 
 def generate_captchas_with_labels(args):
     captcha_generator = captcha.image.ImageCaptcha(width=args.width, height=args.height, fonts=[args.font])
