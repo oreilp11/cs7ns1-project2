@@ -9,3 +9,6 @@ __pycache__
 training/
 venv/
 test/
+captchas/
+train/img
+project2
