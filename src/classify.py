@@ -64,5 +64,6 @@ def main():
         for captcha, label in results:
             output_file.write(f'{captcha},{label}\n')
 
+
 if __name__ == '__main__':
     main()
