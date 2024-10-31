@@ -7,7 +7,7 @@ import cv2
 import numpy as np
 import argparse
 from tqdm import tqdm
-import tensorflow as tf
+import tflite_runtime as tflite
 from utils import clean_img, split_img, center_pad, time_func
 
 import warnings
@@ -42,7 +42,7 @@ def main():
     print(f"Classifying captchas with symbol set {captcha_symbols} and labels {captcha_labels}")
 
     results = []
-    model = tf.lite.Interpreter(args.model_path)
+    model = tflite.Interpreter(args.model_path)
     model.allocate_tensors()
     for captcha in tqdm(os.listdir(args.captcha_dir)):
         raw_data = clean_img(cv2.imread(os.path.join(args.captcha_dir, captcha), 0))
