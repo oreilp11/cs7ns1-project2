@@ -1,7 +1,6 @@
 import requests
 import time
 import argparse
-from tqdm import tqdm
 import os
 from concurrent.futures import ThreadPoolExecutor
 
@@ -44,11 +43,11 @@ def fetch_csv_file(args):
 def fetch_remaining_files(args):
     remaining_files = check_missing_files(args)
     while len(remaining_files) > 0:
-        print(f"Files remaining: {len(remaining_files)}")
+        print(f"Remaining files: {len(remaining_files)}")
         try:
             with ThreadPoolExecutor(args.max_workers) as tpex:
-                for i, file in enumerate(remaining_files):
-                    tpex.submit(fetch_img_file, file, i, args)
+                for file in remaining_files:
+                    tpex.submit(fetch_img_file, file, args)
         except Exception as e:
             print(e)
         except KeyboardInterrupt:
