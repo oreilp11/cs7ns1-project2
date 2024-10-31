@@ -70,35 +70,36 @@ def fetch_img_file(file, args):
 
 def parse_args():
     parser = argparse.ArgumentParser(description="Download files with parallel requests.")
-    parser.add_argument("-n","--max_workers", type=int, default=5, help="Maximum number of parallel workers.", required=False)
-    parser.add_argument("-f","--file-path", type=str, help="Maximum number of parallel workers.", required=True)
-    parser.add_argument("-i","--img-path", type=str, help="Maximum number of parallel workers.", required=True)
-    parser.add_argument("-m","--missed-path", type=str, help="Maximum number of parallel workers.", required=True)
-    parser.add_argument("-s","--shortname", type=str, help="Maximum number of parallel workers.", required=True)
-    parser.add_argument("-u","--url", type=str, help="Maximum number of parallel workers.", required=True)
+    parser.add_argument("-n","--max_workers", type=int, default=4, help="Maximum number of parallel workers.", required=False)
+    parser.add_argument("-f","--file-path", type=str, help="path to file list", required=True)
+    parser.add_argument("-i","--img-path", type=str, help="path to image directory", required=True)
+    parser.add_argument("-m","--missed-path", type=str, help="path to missed files", required=False, default=os.path.join(os.path.dirname(__file__),'temp.csv'))
+    parser.add_argument("-s","--shortname", type=str, help="shortname for get request", required=True)
+    parser.add_argument("-u","--url", type=str, help="url for get request", required=True)
     args = parser.parse_args()
-
-    if not os.path.exists(args.file_path):
-        with open(args.file_path,'w'):
-            pass
-
-    if not os.path.exists(args.img_path):
-        os.makedirs(args.img_path)
-
-    if not os.path.exists(args.missed_path):
-        with open(args.missed_path,'w'):
-            pass
 
     return args
 
 
 @time_func
 def main():
-
     args = parse_args()
+
+    if not os.path.exists(args.file_path):
+        os.makedirs(os.path.dirname(args.file_path), exist_ok=True)
+        open(args.file_path,'w').close()
+
+    if not os.path.exists(args.img_path):
+        os.makedirs(args.img_path)
+
+    if not os.path.exists(args.missed_path):
+        os.makedirs(os.path.dirname(args.missed_path), exist_ok=True)
+        open(args.missed_path,'w').close()
 
     if fetch_csv_file(args):
         fetch_remaining_files(args)
+    
+    os.remove(args.missed_path)
 
 if __name__ == "__main__":
     main()
