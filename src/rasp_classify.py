@@ -1,10 +1,18 @@
 import os
+
+os.environ["TF_USE_LEGACY_KERAS"] = "1"
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
+
 import cv2
 import numpy as np
 import argparse
-import tflite_runtime.interpreter as tflite
 from tqdm import tqdm
-from utils import time_func, split_img, clean_img, center_pad
+import tensorflow as tf
+from utils import clean_img, split_img, center_pad, time_func
+
+import warnings
+warnings.filterwarnings("ignore", category=FutureWarning)
+warnings.filterwarnings("ignore", category=DeprecationWarning)
 
 
 def parse_args():
@@ -17,6 +25,7 @@ def parse_args():
     parser.add_argument('-n','--shortname', help='Shortname for csv submission', type=str, required=True)
     args = parser.parse_args()
     return args
+
 
 @time_func
 def main():
@@ -33,7 +42,7 @@ def main():
     print(f"Classifying captchas with symbol set {captcha_symbols} and labels {captcha_labels}")
 
     results = []
-    model = tflite.Interpreter(args.model_path)
+    model = tf.lite.Interpreter(args.model_path)
     model.allocate_tensors()
     for captcha in tqdm(os.listdir(args.captcha_dir)):
         raw_data = clean_img(cv2.imread(os.path.join(args.captcha_dir, captcha), 0))

@@ -17,4 +17,7 @@ Completed by Paul O'Reilly and Duddupudi Daya Lokesh
 
 ## Instructions on how to run code
 ### Classifying on the Pi
-The files you will need are `fetch_files.py` and `rasp_classify.py`. The prerequisite python packages are 
+The files you will need are `fetch_files.py` and `rasp_classify.py`. The prerequisite python packages are listed in the `requirements-pi.txt` file.
+#### Fetching Files
+
+    python .src/fetch_files.py -h
