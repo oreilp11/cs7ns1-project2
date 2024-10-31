@@ -64,7 +64,7 @@ def get_remaining_images(url, payload, file_path, img_path, missed_path):
                     for file in missed_files:
                         f.write(f"{file}\n")
             file_path = missed_path
-
+            
 
 if __name__ == "__main__":
     url = "https://cs7ns1.scss.tcd.ie"
@@ -73,7 +73,7 @@ if __name__ == "__main__":
     img_path = os.path.join(os.path.dirname(__file__), "images")
     missed_path = os.path.join(os.path.dirname(__file__), "missed.csv")
 
-    # if get_first_file(url, payload, file_path):
-    #     get_remaining_images(url, payload, file_path, img_path, missed_path)
+    if get_first_file(url, payload, file_path):
+        get_remaining_images(url, payload, file_path, img_path, missed_path)
 
     check_missing_files(img_path, file_path, missed_path)

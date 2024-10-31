@@ -13,6 +13,7 @@ def time_func(func):
         print(f"Runtime: {end-start:0.2f}s")
     return wrapper
 
+
 def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument('-i','--input_dir', help='How many captchas to generate', type=str, required=True)
@@ -20,6 +21,7 @@ def parse_args():
     parser.add_argument('-s','--split', help='File with the symbols to use in captchas', type=int, required=False, default=0.2)
     args = parser.parse_args()
     return args
+
 
 @time_func
 def main():
