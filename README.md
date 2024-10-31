@@ -19,6 +19,7 @@ This codebase assumes that Python == 3.8 is installed on the Pi. It also assumes
 6. _(Optional)_ Classify the captcha set with a trained .tflite model using `classify.py`
 
 ## Instructions on How to Run Code
+The below assumes you are in the root directory of the project i.e. parent directory of `src`
 
 ### Classifying on Pi
 The files you will need are `fetch_files.py` and `rasp_classify.py`. The prerequisite python packages are listed in the `requirements-pi.txt` file.
@@ -26,7 +27,7 @@ The files you will need are `fetch_files.py` and `rasp_classify.py`. The prerequ
 #### Fetching Files
 Run the below in a venv with the appropriate prerequisites installed:
 ```
-python ./src/fetch_files.py -h
+python src/fetch_files.py -h
 ```
 
 The `fetch_files.py` module has the following inputs:
@@ -39,12 +40,12 @@ The `fetch_files.py` module has the following inputs:
 
 Below is an example of how we used `fetch_files.py`:
 ```
-python ./src/fetch_files.py -n 4 -f ./assets/oreilp11_fienames.csv -i ./assets/imgs/oreilp11 -s oreilp11 -u https://cs7ns1.scss.tcd.ie
+python src/fetch_files.py -n 4 -f assets/oreilp11_fienames.csv -i assets/imgs/oreilp11 -s oreilp11 -u https://cs7ns1.scss.tcd.ie
 ```
 #### Classifying Files
 Run the below in a venv with the appropriate prerequisites installed and trained `.tflite` model copied to the pi:
 ```
-python ./src/rasp_classify.py -h
+python src/rasp_classify.py -h
 ```
 
 The `rasp_classify.py` module has the following inputs:
@@ -57,7 +58,7 @@ The `rasp_classify.py` module has the following inputs:
 
 Below is an example of how we used `rasp_classify.py`:
 ```
-python ./src/rasp_classify.py -m ./models/lilian-eamon/lilian-eamon.tflite -c ./assets/imgs/oreilp11 -s ./assets/symbols.txt -l ./assets/labels.txt -o ./models/lilian-eamon/oreilp11_classified.csv -n oreilp11
+python src/rasp_classify.py -m models/lilian-eamon/lilian-eamon.tflite -c assets/imgs/oreilp11-imgs -s assets/symbols.txt -l assets/labels.txt -o models/lilian-eamon/oreilp11.csv -n oreilp11
 ```
 
 ### Training Model on PC
@@ -66,7 +67,7 @@ The files you will need are `generate.py` and `train.py`. Optionally classificat
 #### Generating Training Set
 Run the below in a venv with the appropriate prerequisites installed:
 ```
-python ./src/generate.py -h
+python .\src\generate.py -h
 ```
 
 The `generate.py` module has the following inputs:
@@ -120,5 +121,5 @@ The `classify.py` module has the following inputs:
 
 Below is an example of how we used `classify.py`:
 ```
-python .\src\classify.py -m .\models\lilian-eamon\lilian-eamon.tflite -c .\assets\imgs\oreilp11 -s .\assets\symbols.txt -l .\assets\labels.txt -o .\models\lilian-eamon\oreilp11_classified.csv -n oreilp11
+python .\src\classify.py -m .\models\lilian-eamon\lilian-eamon.tflite -c .\assets\imgs\oreilp11-imgs -s .\assets\symbols.txt -l .\assets\labels.txt -o .\models\lilian-eamon\oreilp11_classified.csv -n oreilp11
 ```
