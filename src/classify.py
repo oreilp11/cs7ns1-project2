@@ -7,6 +7,7 @@ import cv2
 import time
 import numpy
 import argparse
+from tqdm import tqdm
 import tensorflow as tf
 import tensorflow.keras as keras
 
@@ -37,12 +38,14 @@ def main():
     parser.add_argument('-l','--labels', help='File with the labels to use in captchas', type=str, required=True)
     args = parser.parse_args()
 
+    if not os.path.exists(os.path.dirname(args.output)):
+        os.makedirs(os.path.dirname(args.output))
+
     with open(args.symbols, 'r') as symbols_file:
-        captcha_symbols = symbols_file.readline().strip()
+        captcha_symbols = sorted(symbols_file.readline().strip())
     with open(args.labels, 'r') as labels_file:
-        captcha_labels = labels_file.readline().strip()
-    symbols_dict = {label:symbol for symbol, label in zip(captcha_symbols,captcha_labels)}
-    print(symbols_dict)
+        captcha_labels = sorted(labels_file.readline().strip())
+    symbols_dict = {symbol:label for symbol, label in zip(captcha_symbols,captcha_labels)}
     print(f"Classifying captchas with symbol set {captcha_symbols} and labels {captcha_labels}")
 
     with tf.device('/cpu:0'):
@@ -54,15 +57,13 @@ def main():
                           optimizer=keras.optimizers.Adam(1e-3, amsgrad=True),
                           metrics=['sparse_categorical_accuracy'])
 
-            for x in os.listdir(args.captcha_dir):
+            for captcha in os.listdir(args.captcha_dir):
                 # load image and preprocess it
-                raw_data = cv2.imread(os.path.join(args.captcha_dir, x))
-                image = cv2.cvtColor(raw_data, cv2.COLOR_BGR2GRAY)
-                h, w = image.shape
-                image = image.reshape([-1, h, w])
-                prediction = model.predict(image)
-                output_file.write(f'{x}, {decode(captcha_symbols, symbols_dict, prediction)}\n')
+                raw_data = cv2.imread(os.path.join(args.captcha_dir, captcha), 0)
+                h, w = raw_data.shape
+                raw_data = raw_data.reshape([-1, h, w, 1])
+                prediction = model.predict(raw_data, )
+                output_file.write(f'{captcha}, {decode(captcha_symbols, symbols_dict, prediction)}\n')
 
-                print(f'Classified {x}')
 if __name__ == '__main__':
     main()
