@@ -75,12 +75,12 @@ def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument("-w", "--width", help="Width of captcha image", type=int,required=True)
     parser.add_argument("-H", "--height", help="Height of captcha image", type=int,required=True)
-    parser.add_argument("-b", "--batch-size", help="How many images in training captcha batches", type=int,required=True)
-    parser.add_argument("-d", "--dataset-dir", help="Where to look for the training image dataset", type=str,required=True)
-    parser.add_argument("-o", "--output-model-name", help="Where to save the trained model", type=str,required=True)
-    parser.add_argument("-r", "--input-model",help="Where to look for the input model to continue training",type=str,required=False)
-    parser.add_argument("-e", "--epochs", help="How many training epochs to run", type=int,required=True)
-    parser.add_argument("-l", "--labels", help="File with the labels to use in captchas", type=str,required=True)
+    parser.add_argument("-b", "--batch-size", help="count of captchas to be used in each batch", type=int,required=True)
+    parser.add_argument("-d", "--dataset-dir", help="path to directory containing the training dataset", type=str,required=True)
+    parser.add_argument("-o", "--output-model-name", help="path to location where the trained model should be saved", type=str,required=True)
+    parser.add_argument("-r", "--input-model",help="path to location to lookup for model incase of resuming the model training",type=str,required=False)
+    parser.add_argument("-e", "--epochs", help="No of epochs to train the model", type=int,required=True)
+    parser.add_argument("-l", "--labels", help="path to file containing the lables to be used in captchas training.", type=str,required=True)
     args = parser.parse_args()
     return args
 
