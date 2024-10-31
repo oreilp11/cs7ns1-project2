@@ -58,7 +58,7 @@ def main():
             prediction = np.argmax(prediction, axis=1)[0]
             arr.append(labels_dict[captcha_labels[prediction]])
         results.append((captcha,''.join(arr)))
-    #results.sort(key = lambda x:x[0])
+    results.sort(key = lambda x:x[0])
     with open(args.output, 'w') as output_file:
         output_file.write(f'{args.shortname}\n')
         for captcha, label in results:

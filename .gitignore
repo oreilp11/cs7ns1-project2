@@ -6,9 +6,5 @@
 __pycache__
 *.pyc
 *.zip
-training/
 venv/
 test/
-captchas/
-train/
-project2/
