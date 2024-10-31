@@ -106,18 +106,21 @@ class ImageSequence(keras.utils.Sequence):
 
 def main():
     parser = argparse.ArgumentParser()
-    parser.add_argument("--width", help="Width of captcha image", type=int,required=True)
-    parser.add_argument("--height", help="Height of captcha image", type=int,required=True)
-    parser.add_argument("--length", help="Length of captchas in characters", type=int,required=True)
-    parser.add_argument("--batch-size", help="How many images in training captcha batches", type=int,required=True)
-    parser.add_argument("--train-dataset", help="Where to look for the training image dataset", type=str,required=True)
-    parser.add_argument("--validate-dataset",help="Where to look for the validation image dataset",type=str,required=True)
-    parser.add_argument("--output-model-name", help="Where to save the trained model", type=str,required=True)
-    parser.add_argument("--input-model",help="Where to look for the input model to continue training",type=str,required=True)
-    parser.add_argument("--epochs", help="How many training epochs to run", type=int,required=True)
-    parser.add_argument("--symbols", help="File with the symbols to use in captchas", type=str,required=True)
+    parser.add_argument("-w", "--width", help="Width of captcha image", type=int,required=True)
+    parser.add_argument("-H", "--height", help="Height of captcha image", type=int,required=True)
+    parser.add_argument("-l", "--length", help="Length of captchas in characters", type=int,required=True)
+    parser.add_argument("-b", "--batch-size", help="How many images in training captcha batches", type=int,required=True)
+    parser.add_argument("-t", "--train-dataset", help="Where to look for the training image dataset", type=str,required=True)
+    parser.add_argument("-v", "--validate-dataset",help="Where to look for the validation image dataset",type=str,required=True)
+    parser.add_argument("-o", "--output-model-name", help="Where to save the trained model", type=str,required=True)
+    parser.add_argument("-r", "--input-model",help="Where to look for the input model to continue training",type=str,required=False)
+    parser.add_argument("-e", "--epochs", help="How many training epochs to run", type=int,required=True)
+    parser.add_argument("-s", "--symbols", help="File with the symbols to use in captchas", type=str,required=True)
+    parser.add_argument("-p", "--is-tflite", help="Set model to export .tflite", action='store_true',default=False)
     args = parser.parse_args()
 
+    if not os.path.exists(os.path.dirname(args.output_model_name)):
+        os.makedirs(os.path.dirname(args.output_model_name))
     captcha_symbols = None
     with open(args.symbols) as symbols_file:
         captcha_symbols = symbols_file.readline()
@@ -188,6 +191,12 @@ def main():
                 + "_resume.h5"
             )
             model.save_weights(args.output_model_name + "_resume.h5")
+        finally:
+            if args.is_tflite:
+                converter = tf.lite.TFLiteConverter.from_keras_model(model)
+                lite_model = converter.convert()
+                with open(f'{args.output_model_name}.tflite', 'wb') as lite_file:
+                    lite_file.write(lite_model)
 
 
 if __name__ == "__main__":
