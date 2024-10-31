@@ -17,6 +17,9 @@ def main():
     parser.add_argument('-l','--labels', help='File with the labels to use in captchas', type=str, required=True)
     args = parser.parse_args()
 
+    if not os.path.exists(os.path.dirname(args.output)):
+        os.makedirs(os.path.dirname(args.output))
+
     with open(args.symbols, 'r') as symbols_file:
         captcha_symbols = symbols_file.readline().strip()
     with open(args.labels, 'r') as labels_file:
