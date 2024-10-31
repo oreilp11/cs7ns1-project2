@@ -74,7 +74,6 @@ def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument("-w", "--width", help="Width of captcha image", type=int,required=True)
     parser.add_argument("-H", "--height", help="Height of captcha image", type=int,required=True)
-    parser.add_argument("-l", "--length", help="Length of captchas in characters", type=int,required=True)
     parser.add_argument("-b", "--batch-size", help="How many images in training captcha batches", type=int,required=True)
     parser.add_argument("-d", "--dataset-dir", help="Where to look for the training image dataset", type=str,required=True)
     parser.add_argument("-o", "--output-model-name", help="Where to save the trained model", type=str,required=True)
@@ -96,10 +95,11 @@ def main():
         captcha_symbols = symbols_file.readline()
 
     with tf.device("/cpu:0"):
-        model = create_model(args.length, len(captcha_symbols), (args.height, args.width))
+        model = create_model(len(captcha_symbols), (args.height, args.width, 1))
 
         training_data, validation_data = keras.preprocessing.image_dataset_from_directory(
             directory=args.dataset_dir,
+            color_mode='grayscale',
             validation_split=0.2,
             subset="both",
             seed=2024,
