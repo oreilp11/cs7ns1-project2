@@ -13,6 +13,12 @@ import tensorflow.keras as keras
 from utils import time_func
 
 def create_model(captcha_num_symbols, input_shape, resume_path):
+    
+    if resume_path is not None:
+        model = keras.model.load_model(resume_path)
+        model.summary()
+        return model
+    
     model = keras.Sequential([
         keras.layers.Rescaling(scale=1./255,input_shape=input_shape),
         keras.layers.Conv2D(32, 3, padding='same', activation='relu', kernel_initializer="he_uniform"),
@@ -55,9 +61,6 @@ def create_model(captcha_num_symbols, input_shape, resume_path):
         keras.layers.Flatten(),
         keras.layers.Dense(captcha_num_symbols, activation='softmax')
     ])
-
-    if resume_path is not None:
-        model.load_weights(resume_path)
 
     model.compile(
         loss="sparse_categorical_crossentropy",
@@ -118,7 +121,7 @@ def main():
             )
         except KeyboardInterrupt:
             print(f"\nPausing training, saving current weights as {args.output_model_name}_resume.keras")
-            model.save_weights(f"{args.output_model_name}_resume.keras")
+            model.save(f"{args.output_model_name}_resume.keras")
         finally:
             converter = tf.lite.TFLiteConverter.from_keras_model(model)
             lite_model = converter.convert()

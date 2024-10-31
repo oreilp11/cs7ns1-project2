@@ -40,9 +40,8 @@ def fetch_remaining_files(args):
             print("Keyboard interrupt - checking remaining files:")
             check_missing_files(args)
             break
-        finally:
-            remaining_files = check_missing_files(args)
-            print("-"*30)
+        remaining_files = check_missing_files(args)
+        print("-"*30)
 
 
 def fetch_img_file(file, args):
