@@ -46,8 +46,10 @@ def generate_captchas(args):
         while os.path.exists(image_path):
             image_path = os.path.join(args.output_dir, random_label, f'{random_label}_{version}.png')
             version += 1
-
-        image = center_pad(clean_img(numpy.array(captcha_generator.generate_image(random_symbol))))
+        
+        image = captcha_generator.generate_image(random_symbol)
+        image = cv2.cvtColor(numpy.array(image),cv2.COLOR_RGB2GRAY)
+        image = center_pad(clean_img(image))
         cv2.imwrite(image_path, image)
 
 
